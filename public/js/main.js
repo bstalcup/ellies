@@ -1,7 +1,6 @@
 Parse.initialize("CxmEYHd1nKiLXtz9B2IUYjDzrjiu8FA8BGrOzscX", "UqKme9pXBvdcG0YRM7JJU1PY7cm52Qkb2nmfAdkp");
 
 
-
 $( function() {
 
 	var Item = Parse.Object.extend("Item");
@@ -20,9 +19,13 @@ $( function() {
 				var modal = "";
 				modal += "<div id='modal" + i + "' class='reveal-modal' data-reveal>";
 				modal += "<h2>" + object.name + "</h2>";
-				modal += "<p>" + object.description + "</p><a class='close-reveal-modal'>&#215;</a></div>";
+				modal += "<p>" + object.description + "</p>";
+				modal += "<a class='right button'>Add to Cart</a>"
+				modal += "<a class='close-reveal-modal'>&#215;</a></div>"
 				isotope.append(string);
 				modals.append(modal);
+				placeOrder(i);
+				console.log(i);		
 			}
 			$(document).foundation();
 		},
@@ -31,6 +34,11 @@ $( function() {
 		}
 	});
 
+	function placeOrder(i) {
+		$('#modal' + i + ' a.right').on( 'click', function(){
+			$('#modal' + i).foundation('reveal', 'close')
+		});
+	}
 	// init Isotope
 	var $container = $('.isotope').isotope({
 		itemSelector: '.element-item',
