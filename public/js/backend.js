@@ -34,7 +34,7 @@ function setBusyMeter() {
 }
 
 function updateOrder( num ) {
-    currentOrders[num].set( "status", currentOrders[num].attributes.Status+1 );
+    currentOrders[num].set( "status", currentOrders[num].attributes.status+1 );
     currentOrders[num].save( null, {
 	    success: function( order ) {
 		checkOrders( false );
