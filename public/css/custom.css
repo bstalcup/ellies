@@ -30,6 +30,10 @@ h1, h2, h3, h4, h5, h6 {
   font-style: normal;
 } 
 
+th {
+   width: 300px;
+}
+
 .reveal-modal > h1,h2,h3,h4,h5,h6 {
 
   color: #222;
@@ -38,10 +42,8 @@ h1, h2, h3, h4, h5, h6 {
 .element-item {
   position: relative;
   float: left;
-  /*width: 100%;*/
   height: 300px;
   padding:0px;
-  /*margin: 5px;*/
   background: #888;
   color: #262524;
 }
