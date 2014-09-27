@@ -9,16 +9,22 @@ $( function() {
 	query.find(
 	{
 		success: function(results){
-			var isotope = $('.isotope')
+			var isotope = $('.isotope');
+			var modals = $('.modals');
 			for (var i = 0; i < results.length; i++) {
 				var object = results[i].attributes;
 				
 				//construct the item for the page
-				var string = ""
-				string = "<div class='element-item food' style='background-image: url(" + object.image._url + "); background-size:300px; background-repeat: no-repeat; background-color: rgba(0,0,0,0);'><div class='reveal'><h4 class='reveal'>" + object.name + "</h4><p class='reveal'>" + object.description + "</p></div></div>";
-				
+				var string = "";
+				string = "<a href='#' data-reveal-id='modal" + i + "'><div class='element-item food' style='background-image: url(" + object.image._url + "); background-size:300px; background-repeat: no-repeat; background-color: rgba(0,0,0,0);'><div class='reveal'><h4 class='reveal'>" + object.name + "</h4><p class='reveal'>" + object.description + "</p></div></div></a>";
+				var modal = "";
+				modal += "<div id='modal" + i + "' class='reveal-modal' data-reveal>";
+				modal += "<h2>" + object.name + "</h2>";
+				modal += "<p>" + object.description + "</p><a class='close-reveal-modal'>&#215;</a></div>";
 				isotope.append(string);
+				modals.append(modal);
 			}
+			$(document).foundation();
 		},
 		error: function(error){
 			console.log(error)

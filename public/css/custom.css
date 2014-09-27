@@ -1,9 +1,16 @@
+nav.top-bar {
+  background-color: #014421;
+}
 
+.contain-to-grid.sticky {
+  background-color: #014421;
+}
 
 body {
   font-family: 'Junction';
   font-weight: normal;
   font-style: normal;
+  background-image: url('../img/crossword.png')
 }  
 
 h1, h2, h3, h4, h5, h6 {
@@ -83,12 +90,12 @@ h1, h2, h3, h4, h5, h6 {
 .element-item.food:hover .reveal {
   visibility: visible;
   margin: 0px;
-  color: rgba( 0, 0, 0, 1.0 );
+  color: rgba( 255, 255, 255, 1.0 );
 }
 
 .element-item.food:hover div {
   margin: 0px;
   height: 100%;
   width: 100%;
-  background-color: rgba( 255, 255, 255, 0.5 );
+  background-color: rgba( 1, 68, 33, 0.8 );
 }
