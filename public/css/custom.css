@@ -1,3 +1,11 @@
+nav.top-bar section.top-bar-section li a {
+  background: #014421 !important;
+}
+
+nav.top-bar.expanded .title-area{
+  background: #014421 !important;  
+}
+
 nav.top-bar {
   background-color: #014421;
 }

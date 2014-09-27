@@ -6,7 +6,9 @@
     <link rel="stylesheet" media="screen" href="http://openfontlibrary.org/face/junction" rel="stylesheet" type="text/css"/> 
     <link rel="stylesheet" type="text/css" href="css/foundation.min.css">
     <link rel="stylesheet" type="text/css" href="css/fonts/junction.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" >
     <link rel="stylesheet" type="text/css" href="css/custom.css">
+
   </head>
   <body>
     <div class="contain-to-grid sticky"> 
@@ -15,14 +17,22 @@
           <li class="name">
             <h1><a href="/">Ellies</a></h1>
           </li>
-        </ul> 
-      </nav> 
+          <li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
+        </ul>
+        <section class="top-bar-section">
+    <!-- Right Nav Section -->
+          <ul class="right">
+            <li><a href="#"><i class="fa fa-2x fa-shopping-cart">&nbsp;</i>0</a></li>
+          </ul>
+        </section> 
+      </nav>
     </div>
     <div class="row">
       <div class="large-3 columns">
         <div class="panel">
           <h4>Here are your instructions:</h4>
           <p>you must read these</p>
+          <i class="fa fa-shopping-cart fa-lg"></i>
           <a href="#" data-reveal-id="orderModal">Click Me For A Modal</a>
         </div>
       </div>
@@ -36,86 +46,50 @@
   <div class="modals">
     <div id="orderModal" class="reveal-modal" data-reveal>
       <h2>Place an order</h2>
+      <div class="row">
+        <div class="small-12 small-centered columns">
+          <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Qty.</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody id="orderList">
+          </tbody>
+          </table>
+        </div>
+      </div>
       <form>
         <div class="row">
-        <div class="large-12 columns">
-        <label>
-        Input Label <input type="text" placeholder="large-12.columns" />
-        </label>
-        </div>
-        </div>
-        <div class="row">
-        <div class="large-4 columns">
-        <label>
-        Input Label <input type="text" placeholder="large-4.columns" />
-        </label>
-        </div>
-        <div class="large-4 columns">
-        <label>
-        Input Label <input type="text" placeholder="large-4.columns" />
-        </label>
-        </div>
-        <div class="large-4 columns">
-        <div class="row collapse">
-        <label>
-        Input Label</label>
-        <div class="small-9 columns">
-        <input type="text" placeholder="small-9.columns" />
-        </div>
-        <div class="small-3 columns">
-        <span class="postfix">.com</span>
-        </div>
-        </div>
-        </div>
-        </div>
-        <div class="row">
-        <div class="large-12 columns">
-        <label>
-        Select Box <select>
-        <option value="husker">
-        Husker</option>
-        <option value="starbuck">
-        Starbuck</option>
-        <option value="hotdog">
-        Hot Dog</option>
-        <option value="apollo">
-        Apollo</option>
-        </select>
-        </label>
-        </div>
-        </div>
-        <div class="row">
-        <div class="large-6 columns">
-        <label>
-        Choose Your Favorite</label>
-        <input type="radio" name="pokemon" value="Red" id="pokemonRed">
-        <label for="pokemonRed">
-        Red</label>
-        <input type="radio" name="pokemon" value="Blue" id="pokemonBlue">
-        <label for="pokemonBlue">
-        Blue</label>
-        </div>
-        <div class="large-6 columns">
-        <label>
-        Check these out</label>
-        <input id="checkbox1" type="checkbox">
-        <label for="checkbox1">
-        Checkbox 1</label>
-        <input id="checkbox2" type="checkbox">
-        <label for="checkbox2">
-        Checkbox 2</label>
-        </div>
-        </div>
-        <div class="row">
-        <div class="large-12 columns">
-        <label>
-        Textarea Label <textarea placeholder="small-12.columns">
-        </textarea>
-        </label>
-        </div>
+          <div class="large-12 columns">
+            <label>
+            Name for order <input type="text" placeholder="U. G. Regatta" />
+            </label>
+          </div>
+          <div class="small-12 large-6 columns">
+            <div class="row">
+              <div class="small-6 columns">
+                <label class="right inline">Room #:</label>
+              </div>
+              <div class="small-6 columns">          
+                <input type="number" placeholder="421" />
+              </div>
+            </div>
+          </div>
+          <div class="small-8 large-4 columns">
+            <h4>Delivery? (Extra 50&#162;)
+          </div>
+          <div class="small-4 large-2 columns">
+            <div class="switch">
+              <input id="exampleCheckboxSwitch" type="checkbox">
+              <label for="exampleCheckboxSwitch"></label>
+            </div> 
+          </div>
         </div>
       </form>
-
+      <a class="close-reveal-modal">&#215;</a>
   </div>
 
     <script src="js/vendor/jquery.js"></script>
