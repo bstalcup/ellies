@@ -34,7 +34,7 @@ function setBusyMeter() {
 }
 
 function updateOrder( num ) {
-    currentOrders[num].set( "Status", currentOrders[num].attributes.Status+1 );
+    currentOrders[num].set( "status", currentOrders[num].attributes.Status+1 );
     currentOrders[num].save( null, {
 	    success: function( order ) {
 		checkOrders( false );
@@ -51,13 +51,13 @@ function checkOrders( playAlert ) {
     query.ascending( "createdAt" );
     if( !showCompletedOrders )
     {
-	query.lessThan( "Status", 2 );
+	query.lessThan( "status", 2 );
     }
     query.find(
     {
 	success: function( results ){
 	    if( playAlert && currentOrders.length != results.length ){
-		$( "#sounds" ).html( "<audio src='Ship_Bell-Mike_Koenig-1911209136.wav' autoplay>" );
+		$( "#sounds" ).html( "<audio src='img/Ship_Bell-Mike_Koenig-1911209136.wav' autoplay>" );
 	    }
 	    currentOrders = results;
 	    numOpenOrders = 0;
@@ -68,14 +68,18 @@ function checkOrders( playAlert ) {
 	    {
 		var object = results[i].attributes;
 		var string = "";
-		string += "<tr><td>" + results[i].id + "</td><td>" + object.Item + "</td><td>" + object.Quantity + "</td><td>" + results[i].createdAt.toLocaleTimeString() + "</td><td><a href='javascript:updateOrder( " + i + " )' class='button tiny ";
+		string += "<tr><td>" + results[i].id;
+		string += "</td><td>" + object.item.name;
+		string += "</td><td>" + object.quantity;
+		string += "</td><td>" + results[i].createdAt.toLocaleTimeString();
+		string += "</td><td><a href='javascript:updateOrder( " + i + " )' class='button tiny ";
 
-		if( object.Status == 1 )
+		if( object.status == 1 )
 		{
 		    string += "info'>In Progress</a></td></tr>";
 		    ++numOpenOrders;
 		}
-		else if( object.Status > 1 )
+		else if( object.status > 1 )
 		{
 		    string += "success'>Done</a></td></tr>";
 		}
