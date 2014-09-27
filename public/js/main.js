@@ -1,4 +1,31 @@
+Parse.initialize("CxmEYHd1nKiLXtz9B2IUYjDzrjiu8FA8BGrOzscX", "UqKme9pXBvdcG0YRM7JJU1PY7cm52Qkb2nmfAdkp");
+
+
+
 $( function() {
+
+	var Item = Parse.Object.extend("Item");
+	var query = new Parse.Query(Item);
+	query.find(
+	{
+		success: function(results){
+			var isotope = $('.isotope')
+			for (var i = 0; i < results.length; i++) {
+				var object = results[i].attributes;
+				
+				//construct the item for the page
+				var string = ""
+				string = "<div class='element-item food' style='background-image: url(" + object.image._url + "); background-size: 300px;'><div class='reveal'>" + object.name + "</div></div>";
+				
+				console.log(string);
+				isotope.append(string);
+			}
+		},
+		error: function(error){
+			console.log(error)
+		}
+	});
+
 	// init Isotope
 	var $container = $('.isotope').isotope({
 		itemSelector: '.element-item',
