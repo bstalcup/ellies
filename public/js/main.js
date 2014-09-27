@@ -4,6 +4,7 @@ Parse.initialize("CxmEYHd1nKiLXtz9B2IUYjDzrjiu8FA8BGrOzscX", "UqKme9pXBvdcG0YRM7
 info = {}
 info['order'] = []
 
+//busy meter stuff
 
 function setClientBusyMeter() {
     var meterLength = 1;
@@ -182,5 +183,9 @@ $( function() {
 
 	setClientBusyMeter();
 	setInterval( "setClientBusyMeter()", 10000 );
+
+	$('#checkout').click(function(){
+		console.log("check out");
+	});
 
 });
