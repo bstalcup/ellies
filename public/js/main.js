@@ -22,18 +22,17 @@ function updateQueueModal() {
 					// console.log(results[i].attributes)
 					// console.log(results[i].attributes.item.attributes)
 					// console.log(results[i].attributes.order.attributes)
-					string += '<div class="small-4 columns"><p>Orderer:&nbsp;'+results[i].attributes.order.attributes.name+'</p></div>'
-					string += '<div class="small-4 columns"><p>Item:&nbsp;'+results[i].attributes.item.attributes.name+'</p></div>'
-					string += '<div class="small-4 columns">'
+					string += '<div class="large-4 medium-6 small-12 columns"><p>Orderer:&nbsp;<strong>'+results[i].attributes.order.attributes.name+'</strong></p></div>'
+					string += '<div class="large-4 medium-6 small-12 columns"><p>Item:&nbsp;<strong>'+results[i].attributes.item.attributes.name+'</strong></p></div>'
+					string += '<div class="large-4 medium-12 small-12 columns">'
 					if (results[i].attributes.status == 0) {
-						string += '<div class="alert-box secondary">We haven\'t started making it yet</div></div>'
+						string += '<div class="alert-box secondary">We haven\'t started making it yet</div></div> <hr/>'
 					}
 					else {
-						string += '<div class="alert-box">We\'re making this item right now!</div></div>' 
+						string += '<div class="alert-box">We\'re making this item right now!</div></div> <hr/>' 
 					}
 				};
-				console.log(string);
-				modal.find('.row').append(string);
+				modal.find('.row').append(string + '<a class="close-reveal-modal">&#215;</a>');
 			},
 			error: function(mystery, error){
 
