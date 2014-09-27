@@ -11,9 +11,10 @@ function updateQueueModal() {
 	var modal = $('#queueModal')
 		var Transaction = Parse.Object.extend('Transaction');
 		var query = new Parse.Query(Transaction);
-		query.lessThan("status",2);
+		query.lessThan("status",3);
 		query.include("item");
 		query.include("order");
+		query.ascending("createdAt");
 		query.find({
 			success: function(results){
 				modal.find('.row').empty()
@@ -28,11 +29,14 @@ function updateQueueModal() {
 					if (results[i].attributes.status == 0) {
 						string += '<div class="alert-box secondary">We haven\'t started making it yet</div></div> <hr/>'
 					}
-					else {
+					else if (results[i].attributes.status == 1) {
 						string += '<div class="alert-box">We\'re making this item right now!</div></div> <hr/>' 
 					}
+					else if (results[i].attributes.status == 2) {
+						string += '<div class="alert-box success">Ready for delivery/pickup!</div></div> <hr/>'
+					}
 				};
-				modal.find('.row').append(string + '<a class="close-reveal-modal">&#215;</a>');
+				modal.find('.row').append(string);
 			},
 			error: function(mystery, error){
 
