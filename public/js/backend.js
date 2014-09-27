@@ -51,7 +51,7 @@ function checkOrders( playAlert ) {
     query.ascending( "createdAt" );
     if( !showCompletedOrders )
     {
-	query.lessThan( "status", 2 );
+	query.lessThan( "status", 3 );
     }
     query.include( "item" );
     query.include( "order" );
@@ -100,9 +100,13 @@ function checkOrders( playAlert ) {
 		    string += "info'>In Progress</a></td></tr>";
 		    ++numOpenOrders;
 		}
-		else if( object.status > 1 )
+		else if( object.status == 2 )
 		{
-		    string += "success'>Done</a></td></tr>";
+		    string += "success'>Ready</a></td></tr>";
+		}
+		else if( object.status > 2 )
+		{
+		    string += "success disabled' style='color:#000000;'>Done</a></td></tr>";
 		}
 		else
 		{

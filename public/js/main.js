@@ -50,7 +50,7 @@ function setClientBusyMeter() {
     var numOpenTransactions = 0;
     var Transaction = Parse.Object.extend( "Transaction" );
     var query = new Parse.Query( Transaction );
-    query.lessThan( "status", 2 );
+    query.lessThan( "status", 3 );
     query.find(
     {
 	success: function( results ){
