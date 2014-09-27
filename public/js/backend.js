@@ -65,7 +65,7 @@ function checkOrders( playAlert ) {
 	    currentOrders = results;
 	    numOpenOrders = 0;
 	    var orderTable = $( "#orders" );
-	    orderTable.html( '<thead><tr><th width="300px">Customer</th><th width="300px">Item</th><th width="300px">Quantity</th><th width="300px">Order Time</th><th width="300px">Status</th></tr></thead>' );
+	    orderTable.html( '<thead><tr><th>Customer</th><th>Item</th><th>Quantity</th><th>Options</th><th>Order Time</th><th>Status</th></tr></thead>' );
 
 	    for( var i = 0; i < results.length; ++i )
 	    {
@@ -74,6 +74,14 @@ function checkOrders( playAlert ) {
 		string += "<tr><td>" + object.order.attributes.name;
 		string += "</td><td>" + object.item.attributes.name;
 		string += "</td><td>" + object.quantity;
+		string += "</td><td>";
+		for( var key in object.options )
+		{
+		    if( object.options[key] )
+		    {
+			string += key + "<br/>";
+		    }
+		}
 		string += "</td><td>" + results[i].createdAt.toLocaleTimeString();
 		string += "</td><td><a href='javascript:updateOrder( " + i + " )' class='button tiny ";
 
