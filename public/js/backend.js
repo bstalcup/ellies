@@ -19,8 +19,6 @@ function setBusyMeter() {
     }
     $( ".meter" ).width( meterLength + "%" );
 
-    console.log( meterLength );
-
     if( meterLength < 40 )
     {
 	document.getElementById( "busymeter" ).className = "progress";
