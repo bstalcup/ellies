@@ -69,7 +69,7 @@ $( function() {
 				
 				//construct the item for the page
 				var string = "";
-				string = "<a  class='small-12 medium-6 large-4 element-item food' href='#' data-reveal-id='modal" + i + "'><div style='background-image: url(" + object.image._url + "); background-size:100%; overflow:hidden; background-repeat: no-repeat; background-color: rgba(0,0,0,0);'><div class='reveal'><h4 class='reveal'>" + object.name + "</h4><p class='reveal'>" + object.description + "</p></div></div></a>";
+				string = "<a  class='small-12 medium-6 large-4 element-item food' data-category='food' href='#' data-reveal-id='modal" + i + "'><div style='background-image: url(" + object.image._url + "); background-size:100%; overflow:hidden; background-repeat: no-repeat; background-color: rgba(0,0,0,0);'><div class='reveal'><h4 class='reveal'>" + object.name + "</h4><p class='reveal'>" + object.description + "</p></div></div></a>";
 				// string = "<a class='small-12 medium-6 large-4 element-item food' href='#' data-reveal-id='modal" + i + "'></a>";
 				var modal = "";
 				modal += "<div  price='" + object.price + "' id='modal" + i + "' data-item='"+results[i].id+"' class='reveal-modal' data-reveal>";
@@ -128,57 +128,57 @@ $( function() {
 	}
 
 	// init Isotope
-	var $container = $('.isotope').isotope({
-		itemSelector: '.element-item',
-		layoutMode: 'fitRows',
-		getSortData: {
-			name: '.name',
-			symbol: '.symbol',
-			number: '.number parseInt',
-			category: '[data-category]',
-			weight: function( itemElem ) {
-			var weight = $( itemElem ).find('.weight').text();
-			return parseFloat( weight.replace( /[\(\)]/g, '') );
-			}
-		}
-		});
+	// var $container = $('.isotope').isotope({
+	// 	itemSelector: '.element-item',
+	// 	layoutMode: 'fitRows',
+	// 	getSortData: {
+	// 		name: '.name',
+	// 		symbol: '.symbol',
+	// 		number: '.number parseInt',
+	// 		category: '[data-category]',
+	// 		weight: function( itemElem ) {
+	// 		var weight = $( itemElem ).find('.weight').text();
+	// 		return parseFloat( weight.replace( /[\(\)]/g, '') );
+	// 		}
+	// 	}
+	// 	});
 
-	// filter functions
-	var filterFns = {
-		// show if number is greater than 50
-		numberGreaterThan50: function() {
-		var number = $(this).find('.number').text();
-		return parseInt( number, 10 ) > 50;
-		},
-		// show if name ends with -ium
-		ium: function() {
-		var name = $(this).find('.name').text();
-		return name.match( /ium$/ );
-		}
-	};
+	// // filter functions
+	// var filterFns = {
+	// 	// show if number is greater than 50
+	// 	numberGreaterThan50: function() {
+	// 	var number = $(this).find('.number').text();
+	// 	return parseInt( number, 10 ) > 50;
+	// 	},
+	// 	// show if name ends with -ium
+	// 	ium: function() {
+	// 	var name = $(this).find('.name').text();
+	// 	return name.match( /ium$/ );
+	// 	}
+	// };
 
-	// bind filter button click
-	$('#filters').on( 'click', 'button', function() {
-		var filterValue = $( this ).attr('data-filter');
-		// use filterFn if matches value
-		filterValue = filterFns[ filterValue ] || filterValue;
-		$container.isotope({ filter: filterValue });
-		});
+	// // bind filter button click
+	// $('#filters').on( 'click', 'button', function() {
+	// 	var filterValue = $( this ).attr('data-filter');
+	// 	// use filterFn if matches value
+	// 	filterValue = filterFns[ filterValue ] || filterValue;
+	// 	$container.isotope({ filter: filterValue });
+	// 	});
 
-	// bind sort button click
-	$('#sorts').on( 'click', 'button', function() {
-		var sortByValue = $(this).attr('data-sort-by');
-		$container.isotope({ sortBy: sortByValue });
-		});
+	// // bind sort button click
+	// $('#sorts').on( 'click', 'button', function() {
+	// 	var sortByValue = $(this).attr('data-sort-by');
+	// 	$container.isotope({ sortBy: sortByValue });
+	// 	});
   
-	// change is-checked class on buttons
-	$('.button-group').each( function( i, buttonGroup ) {
-		var $buttonGroup = $( buttonGroup );
-		$buttonGroup.on( 'click', 'button', function() {
-			$buttonGroup.find('.is-checked').removeClass('is-checked');
-			$( this ).addClass('is-checked');
-			});
-		});
+	// // change is-checked class on buttons
+	// $('.button-group').each( function( i, buttonGroup ) {
+	// 	var $buttonGroup = $( buttonGroup );
+	// 	$buttonGroup.on( 'click', 'button', function() {
+	// 		$buttonGroup.find('.is-checked').removeClass('is-checked');
+	// 		$( this ).addClass('is-checked');
+	// 		});
+	// 	});
 
 	setClientBusyMeter();
 	setInterval( "setClientBusyMeter()", 10000 );

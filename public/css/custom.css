@@ -2,7 +2,18 @@ nav.top-bar section.top-bar-section li a {
   background: #014421 !important;
 }
 
+nav.top-bar section.top-bar-section li a:hover {
+  background: #317451 !important;
+}
 
+h4.reveal, p.reveal {
+  padding:10px;
+}
+
+
+.isotope {
+  margin-top:10px;
+}
 
 nav.top-bar.expanded .title-area{
   background: #014421 !important;  
@@ -51,7 +62,17 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0;
 }
 
-.element-item .name {
+.information {
+  padding-top:20px;
+  height:300px;
+  background-color: #014421;
+}
+
+.information h5 {
+  color: #fff;
+}
+
+/*.element-item .name {
   position: absolute;
 
   left: 10px;
@@ -82,7 +103,7 @@ h1, h2, h3, h4, h5, h6 {
   left: 10px;
   top: 76px;
   font-size: 12px;
-}
+}*/
 
 .element-item.alkali          { background: #F00; background: hsl(   0, 100%, 50%); }
 .element-item.alkaline-earth  { background: #F80; background: hsl(  36, 100%, 50%); }
