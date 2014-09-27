@@ -1,21 +1,57 @@
 Parse.initialize("CxmEYHd1nKiLXtz9B2IUYjDzrjiu8FA8BGrOzscX", "UqKme9pXBvdcG0YRM7JJU1PY7cm52Qkb2nmfAdkp");
 
-<<<<<<< HEAD
+
 info = {}
 info['order'] = []
-=======
+
+//busy meter stuff
+
+
+function updateQueueModal() {
+	var modal = $('#queueModal')
+		var Transaction = Parse.Object.extend('Transaction');
+		var query = new Parse.Query(Transaction);
+		query.lessThan("status",2);
+		query.include("item");
+		query.include("order");
+		query.find({
+			success: function(results){
+				modal.find('.row').empty()
+				var string = ""
+				for (var i = 0; i < results.length; i++) {
+					// console.log(results[i].attributes)
+					// console.log(results[i].attributes.item.attributes)
+					// console.log(results[i].attributes.order.attributes)
+					string += '<div class="small-4 columns"><p>Orderer:&nbsp;'+results[i].attributes.order.attributes.name+'</p></div>'
+					string += '<div class="small-4 columns"><p>Item:&nbsp;'+results[i].attributes.item.attributes.name+'</p></div>'
+					string += '<div class="small-4 columns">'
+					if (results[i].attributes.status == 0) {
+						string += '<div class="alert-box secondary">We haven\'t started making it yet</div></div>'
+					}
+					else {
+						string += '<div class="alert-box">We\'re making this item right now!</div></div>' 
+					}
+				};
+				console.log(string);
+				modal.find('.row').append(string);
+			},
+			error: function(mystery, error){
+
+			}
+		});
+
+}
+
 function setClientBusyMeter() {
     var meterLength = 1;
     var numOpenTransactions = 0;
     var Transaction = Parse.Object.extend( "Transaction" );
     var query = new Parse.Query( Transaction );
-    query.lessThan( "Status", 2 );
+    query.lessThan( "status", 2 );
     query.find(
     {
 	success: function( results ){
-	    console.log( results );
 	    numOpenTransactions = results.length;
-	    console.log( numOpenTransactions );
 
 	    if( numOpenTransactions > 0 )
 	    {
@@ -47,7 +83,6 @@ function setClientBusyMeter() {
     });
 }
 
->>>>>>> c128dfa805fdad208cbb228c3ce39a96229ec9d1
 
 $( function() {
 
@@ -70,7 +105,8 @@ $( function() {
 				
 				//construct the item for the page
 				var string = "";
-				string = "<a href='#' data-reveal-id='modal" + i + "'><div class='element-item food' style='background-image: url(" + object.image._url + "); background-size:300px; background-repeat: no-repeat; background-color: rgba(0,0,0,0);'><div class='reveal'><h4 class='reveal'>" + object.name + "</h4><p class='reveal'>" + object.description + "</p></div></div></a>";
+				string = "<a  class='small-12 medium-6 large-4 element-item food' data-category='food' href='#' data-reveal-id='modal" + i + "'><div style='background-image: url(" + object.image._url + "); background-size:100%; overflow:hidden; background-repeat: no-repeat; background-color: rgba(0,0,0,0);'><div class='reveal'><h4 class='reveal'>" + object.name + "</h4><p class='reveal'>" + object.description + "</p></div></div></a>";
+				// string = "<a class='small-12 medium-6 large-4 element-item food' href='#' data-reveal-id='modal" + i + "'></a>";
 				var modal = "";
 				modal += "<div  price='" + object.price + "' id='modal" + i + "' data-item='"+results[i].id+"' class='reveal-modal' data-reveal>";
 				modal += "<h2 id='name'>" + object.name + ": $" + object.price.toFixed(2) +"</h2>";
@@ -90,7 +126,7 @@ $( function() {
 					};
 				}
 
-				modal += "<div class='row'><div class='small-8 columns'><h4 class='right'>Quantity</h4></div><div class='small-4 columns'><input id='qty" + i +"' type='number'></input></div></div>"
+				modal += "<div class='row'><div class='small-8 columns'><h4 class='right'>Quantity</h4></div><div class='small-4 columns'><input id='qty" + i +"' type='number' value=1></input></div></div>"
 				modal += "<a class='right button'>Add to Cart</a>"
 				modal += "<a class='close-reveal-modal'>&#215;</a></div>"
 				isotope.append(string);
@@ -114,7 +150,6 @@ $( function() {
 			cook['options'] = {}
 			$('#modal' + i + ' .switch input').each(function(index, value){
 				var desc = $(this).parent().parent().parent().find('.right').attr('name')
-				console.log(desc)
 				cook['options'][desc] = $(this).is(":checked");
 				if(cook['options'][desc])
 				{
@@ -127,72 +162,131 @@ $( function() {
 		});
 	}
 
-	// init Isotope
-	var $container = $('.isotope').isotope({
-		itemSelector: '.element-item',
-		layoutMode: 'fitRows',
-		getSortData: {
-			name: '.name',
-			symbol: '.symbol',
-			number: '.number parseInt',
-			category: '[data-category]',
-			weight: function( itemElem ) {
-			var weight = $( itemElem ).find('.weight').text();
-			return parseFloat( weight.replace( /[\(\)]/g, '') );
-			}
-		}
-		});
-
-	// filter functions
-	var filterFns = {
-		// show if number is greater than 50
-		numberGreaterThan50: function() {
-		var number = $(this).find('.number').text();
-		return parseInt( number, 10 ) > 50;
-		},
-		// show if name ends with -ium
-		ium: function() {
-		var name = $(this).find('.name').text();
-		return name.match( /ium$/ );
-		}
-	};
-
-	// bind filter button click
-	$('#filters').on( 'click', 'button', function() {
-		var filterValue = $( this ).attr('data-filter');
-		// use filterFn if matches value
-		filterValue = filterFns[ filterValue ] || filterValue;
-		$container.isotope({ filter: filterValue });
-		});
-
-	// bind sort button click
-	$('#sorts').on( 'click', 'button', function() {
-		var sortByValue = $(this).attr('data-sort-by');
-		$container.isotope({ sortBy: sortByValue });
-		});
-  
-	// change is-checked class on buttons
-	$('.button-group').each( function( i, buttonGroup ) {
-		var $buttonGroup = $( buttonGroup );
-		$buttonGroup.on( 'click', 'button', function() {
-			$buttonGroup.find('.is-checked').removeClass('is-checked');
-			$( this ).addClass('is-checked');
-			});
-		});
-
-	$( ".panel" ).on( "mouseenter", function(){
-		$container.isotope({ filter: ".metal" });
-		});
-	$( ".panel" ).on( "mouseleave", function(){
-		$container.isotope({ filter: "*" });
-<<<<<<< HEAD
-		});
-	});
+	$('#queueButton').click(function(){
+<<<<<<< Updated upstream
+		updateQueueModal();
+		// modal.empty()
+		// modal.append
 =======
-	    });
+		var modal = $('#queueModal')
+		var Transaction = Parse.Object.extend('Transaction');
+		var query = new Parse.Query(Transaction);
+		query.greaterThan("status",0);
+		query.find({
+			success: function(){
+				
+			},
+			error: function(mystery, error){
+
+			}
+		})
+		modal.empty()
+		modal.append
+>>>>>>> Stashed changes
+	});
+
+
+
+	// init Isotope
+	// var $container = $('.isotope').isotope({
+	// 	itemSelector: '.element-item',
+	// 	layoutMode: 'fitRows',
+	// 	getSortData: {
+	// 		name: '.name',
+	// 		symbol: '.symbol',
+	// 		number: '.number parseInt',
+	// 		category: '[data-category]',
+	// 		weight: function( itemElem ) {
+	// 		var weight = $( itemElem ).find('.weight').text();
+	// 		return parseFloat( weight.replace( /[\(\)]/g, '') );
+	// 		}
+	// 	}
+	// 	});
+
+	// // filter functions
+	// var filterFns = {
+	// 	// show if number is greater than 50
+	// 	numberGreaterThan50: function() {
+	// 	var number = $(this).find('.number').text();
+	// 	return parseInt( number, 10 ) > 50;
+	// 	},
+	// 	// show if name ends with -ium
+	// 	ium: function() {
+	// 	var name = $(this).find('.name').text();
+	// 	return name.match( /ium$/ );
+	// 	}
+	// };
+
+	// // bind filter button click
+	// $('#filters').on( 'click', 'button', function() {
+	// 	var filterValue = $( this ).attr('data-filter');
+	// 	// use filterFn if matches value
+	// 	filterValue = filterFns[ filterValue ] || filterValue;
+	// 	$container.isotope({ filter: filterValue });
+	// 	});
+
+	// // bind sort button click
+	// $('#sorts').on( 'click', 'button', function() {
+	// 	var sortByValue = $(this).attr('data-sort-by');
+	// 	$container.isotope({ sortBy: sortByValue });
+	// 	});
+  
+	// // change is-checked class on buttons
+	// $('.button-group').each( function( i, buttonGroup ) {
+	// 	var $buttonGroup = $( buttonGroup );
+	// 	$buttonGroup.on( 'click', 'button', function() {
+	// 		$buttonGroup.find('.is-checked').removeClass('is-checked');
+	// 		$( this ).addClass('is-checked');
+	// 		});
+	// 	});
 
 	setClientBusyMeter();
 	setInterval( "setClientBusyMeter()", 10000 );
+	setInterval( "updateQueueModal()", 10000 );
+
+	$('#checkout').click(function(){
+		var modal = $('#orderModal')
+		var name = modal.find('#nameinput').val();
+		var delivery = modal.find('#deliveryInput').is(":checked");
+		var room = parseInt(modal.find('#roomNumber').val());
+		var comment = modal.find( '#comment' ).val();
+
+		var Order = Parse.Object.extend('Order');
+		var Transaction = Parse.Object.extend('Transaction');
+		order = new Order()
+		order.set('name', name); //user's entered name
+		order.set('roomNumber', room);
+		order.set('delivery', delivery);
+		order.set( 'comment', comment );
+		order.save({
+			success:function(){
+				var transaction = new Transaction();
+				for (var l = 0; l < info['order'].length; l++) {
+					transaction.save({
+						item: { __type: "Pointer", className: "Item", objectId: info['order'][l].item},
+						order: order,
+						quantity: info['order'][l].qty,
+						options: info['order'][l].options,
+						status: 0
+					},{
+						success: function(){
+						    //console.log("order placed!")
+						},
+						error: function(mystery, error){
+							console.log("something went terribly wrong!")
+							console.log(mystery)
+							console.log(error)
+						}
+					})
+				};
+			},
+			error: function(mystery, error){
+				console.log("could not create order!")
+				console.log(mystery);
+				console.log(error);
+			}
+		})
+		modal.foundation('reveal', 'close');
+	});
 
 });
->>>>>>> c128dfa805fdad208cbb228c3ce39a96229ec9d1
