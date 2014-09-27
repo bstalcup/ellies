@@ -126,7 +126,7 @@ $( function() {
 					};
 				}
 
-				modal += "<div class='row'><div class='small-8 columns'><h4 class='right'>Quantity</h4></div><div class='small-4 columns'><input id='qty" + i +"' type='number'></input></div></div>"
+				modal += "<div class='row'><div class='small-8 columns'><h4 class='right'>Quantity</h4></div><div class='small-4 columns'><input id='qty" + i +"' type='number' value=1></input></div></div>"
 				modal += "<a class='right button'>Add to Cart</a>"
 				modal += "<a class='close-reveal-modal'>&#215;</a></div>"
 				isotope.append(string);
@@ -150,7 +150,6 @@ $( function() {
 			cook['options'] = {}
 			$('#modal' + i + ' .switch input').each(function(index, value){
 				var desc = $(this).parent().parent().parent().find('.right').attr('name')
-				console.log(desc)
 				cook['options'][desc] = $(this).is(":checked");
 				if(cook['options'][desc])
 				{
@@ -233,12 +232,15 @@ $( function() {
 		var name = modal.find('#nameinput').val();
 		var delivery = modal.find('#deliveryInput').is(":checked");
 		var room = parseInt(modal.find('#roomNumber').val());
+		var comment = modal.find( '#comment' ).val();
+
 		var Order = Parse.Object.extend('Order');
 		var Transaction = Parse.Object.extend('Transaction');
 		order = new Order()
 		order.set('name', name); //user's entered name
 		order.set('roomNumber', room);
 		order.set('delivery', delivery);
+		order.set( 'comment', comment );
 		order.save({
 			success:function(){
 				var transaction = new Transaction();
@@ -251,7 +253,7 @@ $( function() {
 						status: 0
 					},{
 						success: function(){
-							console.log("order placed!")
+						    //console.log("order placed!")
 						},
 						error: function(mystery, error){
 							console.log("something went terribly wrong!")
