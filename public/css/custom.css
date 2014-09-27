@@ -4,7 +4,6 @@
   width: 100px;
   height: 100px;
   margin: 5px;
-  padding: 10px;
   background: #888;
   color: #262524;
 }
@@ -58,6 +57,12 @@
 .element-item.halogen         { background: #F0F; background: hsl( 288, 100%, 50%); }
 .element-item.noble-gas       { background: #F08; background: hsl( 324, 100%, 50%); }
 
-.reveal {
+.element-item.food .reveal {
   visibility: hidden;
+  width: 100%;
+  height: 100%;
+  background-color: rgba( 255, 255, 255, 0.5 );
+}
+.element-item.food:hover .reveal {
+  visibility: visible;
 }
