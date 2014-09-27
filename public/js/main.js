@@ -1,7 +1,53 @@
 Parse.initialize("CxmEYHd1nKiLXtz9B2IUYjDzrjiu8FA8BGrOzscX", "UqKme9pXBvdcG0YRM7JJU1PY7cm52Qkb2nmfAdkp");
 
+
 info = {}
 info['order'] = []
+
+
+function setClientBusyMeter() {
+    var meterLength = 1;
+    var numOpenTransactions = 0;
+    var Transaction = Parse.Object.extend( "Transaction" );
+    var query = new Parse.Query( Transaction );
+    query.lessThan( "Status", 2 );
+    query.find(
+    {
+	success: function( results ){
+	    console.log( results );
+	    numOpenTransactions = results.length;
+	    console.log( numOpenTransactions );
+
+	    if( numOpenTransactions > 0 )
+	    {
+		meterLength = numOpenTransactions * 10;
+		if( meterLength > 100 )
+		{
+		    meterLength = 100;
+		}
+	    }
+	    $( ".meter" ).width( meterLength + "%" );
+
+	    if( meterLength < 40 )
+	    {
+		document.getElementById( "busymeter" ).className = "progress";
+	    }
+	    else if( meterLength < 70 )
+	    {
+		document.getElementById( "busymeter" ).className = "progress success";
+	    }
+	    else
+	    {
+		document.getElementById( "busymeter" ).className = "progress alert";
+	    }
+
+	},
+	error: function( error ){
+	    console.log( error );
+	}
+    });
+}
+
 
 $( function() {
 
@@ -80,6 +126,7 @@ $( function() {
 			$('number').text(info['order'].length);
 		});
 	}
+
 	// init Isotope
 	var $container = $('.isotope').isotope({
 		itemSelector: '.element-item',
@@ -133,10 +180,7 @@ $( function() {
 			});
 		});
 
-	$( ".panel" ).on( "mouseenter", function(){
-		$container.isotope({ filter: ".metal" });
-		});
-	$( ".panel" ).on( "mouseleave", function(){
-		$container.isotope({ filter: "*" });
-		});
-	});
+	setClientBusyMeter();
+	setInterval( "setClientBusyMeter()", 10000 );
+
+});
