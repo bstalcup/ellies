@@ -53,23 +53,26 @@ function checkOrders( playAlert ) {
     {
 	query.lessThan( "status", 2 );
     }
+    query.include( "item" );
+    query.include( "order" );
+
     query.find(
     {
 	success: function( results ){
 	    if( playAlert && currentOrders.length != results.length ){
-		$( "#sounds" ).html( "<audio src='img/Ship_Bell-Mike_Koenig-1911209136.wav' autoplay>" );
+		$( "#sounds" ).html( "<audio src='img/Ship_Bell-Mike_Koenig-1911209136.wav' autoplay></audio>" );
 	    }
 	    currentOrders = results;
 	    numOpenOrders = 0;
 	    var orderTable = $( "#orders" );
-	    orderTable.html( '<thead><tr><th width="300px">Order ID</th><th width="300px">Item</th><th width="300px">Quantity</th><th width="300px">Order Time</th><th width="300px">Status</th></tr></thead>' );
+	    orderTable.html( '<thead><tr><th width="300px">Customer</th><th width="300px">Item</th><th width="300px">Quantity</th><th width="300px">Order Time</th><th width="300px">Status</th></tr></thead>' );
 
 	    for( var i = 0; i < results.length; ++i )
 	    {
 		var object = results[i].attributes;
 		var string = "";
-		string += "<tr><td>" + results[i].id;
-		string += "</td><td>" + object.item.name;
+		string += "<tr><td>" + object.order.attributes.name;
+		string += "</td><td>" + object.item.attributes.name;
 		string += "</td><td>" + object.quantity;
 		string += "</td><td>" + results[i].createdAt.toLocaleTimeString();
 		string += "</td><td><a href='javascript:updateOrder( " + i + " )' class='button tiny ";
