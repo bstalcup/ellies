@@ -15,9 +15,8 @@ $( function() {
 				
 				//construct the item for the page
 				var string = ""
-				string = "<div class='element-item food' style='background-image: url(" + object.image._url + "); background-size: 300px;'><div class='reveal'>" + object.name + "</div></div>";
+				string = "<div class='element-item food' style='background-image: url(" + object.image._url + "); background-size:300px; background-repeat: no-repeat; background-color: rgba(0,0,0,0);'><div class='reveal'><h4 class='reveal'>" + object.name + "</h4><p class='reveal'>" + object.description + "</p></div></div>";
 				
-				console.log(string);
 				isotope.append(string);
 			}
 		},
