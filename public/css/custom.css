@@ -2,6 +2,8 @@ nav.top-bar section.top-bar-section li a {
   background: #014421 !important;
 }
 
+
+
 nav.top-bar.expanded .title-area{
   background: #014421 !important;  
 }
@@ -28,12 +30,18 @@ h1, h2, h3, h4, h5, h6 {
   font-style: normal;
 } 
 
+.reveal-modal > h1,h2,h3,h4,h5,h6 {
+
+  color: #222;
+}
+
 .element-item {
   position: relative;
   float: left;
-  width: 300px;
+  /*width: 100%;*/
   height: 300px;
-  margin: 5px;
+  padding:0px;
+  /*margin: 5px;*/
   background: #888;
   color: #262524;
 }
@@ -87,13 +95,27 @@ h1, h2, h3, h4, h5, h6 {
 .element-item.halogen         { background: #F0F; background: hsl( 288, 100%, 50%); }
 .element-item.noble-gas       { background: #F08; background: hsl( 324, 100%, 50%); }
 
+
+
 .element-item.food .reveal {
   visibility: hidden;
   margin: 0px;
   width: 100%;
+
   color: rgba( 0, 0, 0, 0.0 );
   background-color: rgba( 255, 255, 255, 0.0 );
   transition: background-color 0.5s, color 0.5s;
+}
+
+.element-item.food p.reveal{
+  height:100%;
+}
+
+.element-item.food {
+  background-size:100%; 
+  overflow:hidden; 
+  background-repeat: no-repeat; 
+  background-color: rgba(0,0,0,0);
 }
 
 .element-item.food:hover .reveal {

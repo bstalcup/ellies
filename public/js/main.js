@@ -71,7 +71,8 @@ $( function() {
 				
 				//construct the item for the page
 				var string = "";
-				string = "<a href='#' data-reveal-id='modal" + i + "'><div class='element-item food' style='background-image: url(" + object.image._url + "); background-size:300px; background-repeat: no-repeat; background-color: rgba(0,0,0,0);'><div class='reveal'><h4 class='reveal'>" + object.name + "</h4><p class='reveal'>" + object.description + "</p></div></div></a>";
+				string = "<a  class='small-12 medium-6 large-4 element-item food' href='#' data-reveal-id='modal" + i + "'><div style='background-image: url(" + object.image._url + "); background-size:100%; overflow:hidden; background-repeat: no-repeat; background-color: rgba(0,0,0,0);'><div class='reveal'><h4 class='reveal'>" + object.name + "</h4><p class='reveal'>" + object.description + "</p></div></div></a>";
+				// string = "<a class='small-12 medium-6 large-4 element-item food' href='#' data-reveal-id='modal" + i + "'></a>";
 				var modal = "";
 				modal += "<div  price='" + object.price + "' id='modal" + i + "' data-item='"+results[i].id+"' class='reveal-modal' data-reveal>";
 				modal += "<h2 id='name'>" + object.name + ": $" + object.price.toFixed(2) +"</h2>";
@@ -185,7 +186,45 @@ $( function() {
 	setInterval( "setClientBusyMeter()", 10000 );
 
 	$('#checkout').click(function(){
-		console.log("check out");
+		var modal = $('#orderModal')
+		var name = modal.find('#nameinput').val();
+		var delivery = modal.find('#deliveryInput').is(":checked");
+		var room = parseInt(modal.find('#roomNumber').val());
+		var Order = Parse.Object.extend('Order');
+		var Transaction = Parse.Object.extend('Transaction');
+		order = new Order()
+		order.set('name', name); //user's entered name
+		order.set('roomNumber', room);
+		order.set('delivery', delivery);
+		order.save({
+			success:function(){
+				var transaction = new Transaction();
+				for (var l = 0; l < info['order'].length; l++) {
+					transaction.save({
+						item: { __type: "Pointer", className: "Item", objectId: info['order'][l].item},
+						order: order,
+						quantity: info['order'][l].qty,
+						options: info['order'][l].options,
+						status: 0
+					},{
+						success: function(){
+							console.log("order placed!")
+						},
+						error: function(mystery, error){
+							console.log("something went terribly wrong!")
+							console.log(mystery)
+							console.log(error)
+						}
+					})
+				};
+			},
+			error: function(mystery, error){
+				console.log("could not create order!")
+				console.log(mystery);
+				console.log(error);
+			}
+		})
+		modal.foundation('reveal', 'close');
 	});
 
 });

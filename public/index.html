@@ -27,29 +27,24 @@
         </section> 
       </nav>
     </div>
-    <div class="row">
-      <div class="large-3 columns">
+    <div class="row isotope">
+      <div class="large-4 medium-6 small-12 columns">
         <div class="panel">
           <h4>Here are your instructions:</h4>
           <p>you must read these</p>
         </div>
-
-	<div class="row">
-	  <div class="large-12 columns">
-            <h5>Busy-Meter: </h5>
-            <div id="busymeter" class="progress"><span class="meter" style="width: 1%"></span></div>
-	  </div>
-    </div>
-
-      </div>
-      <div class="large-9 columns">
-        <div class="isotope">
+        <div class="large-12 columns">
+          <h5>Busy-Meter: </h5>
+          <div id="busymeter" class="progress"><span class="meter" style="width: 1%"></span></div>
         </div>
       </div>
     </div>
 
 <!-- modals -->
   <div class="modals">
+    <div id="queueModal" class="reveal-modal" data-reveal>
+      <h2>Current order queue:</h2>
+    </div>
     <div id="orderModal" class="reveal-modal" data-reveal>
       <h2>Review and place an order</h2>
       <div class="row">
@@ -71,7 +66,7 @@
         <div class="row">
           <div class="large-12 columns">
             <label>
-            Name for order <input type="text" placeholder="U. G. Regatta" />
+            Name for order <input type="text" id="nameinput" placeholder="U. G. Regatta" />
             </label>
           </div>
           <div class="small-12 large-6 columns">
@@ -80,12 +75,12 @@
                 <label class="right inline">Room #:</label>
               </div>
               <div class="small-9 columns">          
-                <input type="number" placeholder="421" />
+                <input id="roomNumber" type="number" placeholder="421" />
               </div>
             </div>
           </div>
           <div class="small-8 large-4 columns">
-            <h4>Delivery? (Extra 50&#162;)
+            <h4 class="right">Delivery? (Extra 50&#162;)
           </div>
           <div class="small-4 large-2 columns">
             <div class="switch">
