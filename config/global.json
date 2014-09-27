@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "L-E's": {
+            "applicationId": "CxmEYHd1nKiLXtz9B2IUYjDzrjiu8FA8BGrOzscX", 
+            "masterKey": "8hGjlNaqNaNkg3cbrpqcauIeVNEay0arRMrtd923"
+        }, 
+        "_default": {
+            "link": "L-E's"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.3.0"
+    }
+}
