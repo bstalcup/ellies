@@ -1,10 +1,9 @@
 Parse.initialize("CxmEYHd1nKiLXtz9B2IUYjDzrjiu8FA8BGrOzscX", "UqKme9pXBvdcG0YRM7JJU1PY7cm52Qkb2nmfAdkp");
 
-
+<<<<<<< HEAD
 info = {}
 info['order'] = []
-
-
+=======
 function setClientBusyMeter() {
     var meterLength = 1;
     var numOpenTransactions = 0;
@@ -48,6 +47,7 @@ function setClientBusyMeter() {
     });
 }
 
+>>>>>>> c128dfa805fdad208cbb228c3ce39a96229ec9d1
 
 $( function() {
 
@@ -180,7 +180,19 @@ $( function() {
 			});
 		});
 
+	$( ".panel" ).on( "mouseenter", function(){
+		$container.isotope({ filter: ".metal" });
+		});
+	$( ".panel" ).on( "mouseleave", function(){
+		$container.isotope({ filter: "*" });
+<<<<<<< HEAD
+		});
+	});
+=======
+	    });
+
 	setClientBusyMeter();
 	setInterval( "setClientBusyMeter()", 10000 );
 
 });
+>>>>>>> c128dfa805fdad208cbb228c3ce39a96229ec9d1
