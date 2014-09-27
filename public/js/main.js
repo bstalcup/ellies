@@ -6,6 +6,7 @@ info['order'] = []
 
 //busy meter stuff
 
+
 function setClientBusyMeter() {
     var meterLength = 1;
     var numOpenTransactions = 0;
@@ -126,6 +127,24 @@ $( function() {
 			$('number').text(info['order'].length);
 		});
 	}
+
+	$('#queueButton').click(function(){
+		console.log('8j');
+		var modal = $('#queueModal')
+		var Transaction = Parse.Object.extend('Transaction');
+		var query = new Parse.Query(Transaction);
+		query.greaterThan("status",0);
+		query.find({
+			success: function(){
+				
+			},
+			error: function(mystery, error){
+
+			}
+		})
+		modal.empty()
+		modal.append
+	});
 
 	// init Isotope
 	// var $container = $('.isotope').isotope({

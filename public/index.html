@@ -23,7 +23,7 @@
     <!-- Right Nav Section -->
           <ul class="right">
             <li><a href="#" data-reveal-id="orderModal"><i class="fa fa-2x fa-shopping-cart">&nbsp;</i><number>0</number></a></li>
-            <li><a href="#" data-reveal-id="queueModal"><i class="fa fa-2x fa-list-ul"></i>&nbsp;</a></li>
+            <li><a href="#" data-reveal-id="queueModal" id="queueButton"><i class="fa fa-2x fa-list-ul"></i>&nbsp;</a></li>
           </ul>
         </section> 
       </nav>
@@ -45,6 +45,9 @@
   <div class="modals">
     <div id="queueModal" class="reveal-modal" data-reveal>
       <h2>Current order queue:</h2>
+      <div class="row">
+        <p>Loading...&nbsp;<i class="fa fa-spin fa-spinner"></i></p>
+      </div>
     </div>
     <div id="orderModal" class="reveal-modal" data-reveal>
       <h2>Review and place an order</h2>
