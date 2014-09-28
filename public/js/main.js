@@ -4,6 +4,7 @@ Parse.initialize("CxmEYHd1nKiLXtz9B2IUYjDzrjiu8FA8BGrOzscX", "UqKme9pXBvdcG0YRM7
 info = {};
 info['order'] = [];
 var orderPlaced = false;
+var delivery = false;
 var orderId = "";
 var orderChecker;
 
@@ -155,10 +156,14 @@ function checkYourOrder()
 	{
 	    if( results.length < 1 )
 	    {
-		$( "#readyModal" ).foundation( "reveal", "open" );
-		$( "#sounds" ).html( "<audio src='img/Ship_Bell-Mike_Koenig-1911209136.wav' autoplay></audio>" );
+		if( !delivery )
+		{
+		    $( "#readyModal" ).foundation( "reveal", "open" );
+		    $( "#sounds" ).html( "<audio src='img/Ship_Bell-Mike_Koenig-1911209136.wav' autoplay></audio>" );
+		}
 		clearInterval( orderChecker );
 		orderPlaced = false;
+		delivery = false;
 		document.getElementById( "queueButton" ).style.color = "#ffffff";
 	    }
 	},
@@ -269,7 +274,6 @@ $( function() {
 	setClientBusyMeter();
 	setInterval( "setClientBusyMeter()", 10000 );
 	setInterval( "updateQueueModal()", 10000 );
-
 	// $('#checkout').click(function(){
 	$('form').each(function(index){
 		$(this).on('submit', function(e){

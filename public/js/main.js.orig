@@ -1,19 +1,75 @@
 Parse.initialize("CxmEYHd1nKiLXtz9B2IUYjDzrjiu8FA8BGrOzscX", "UqKme9pXBvdcG0YRM7JJU1PY7cm52Qkb2nmfAdkp");
 
 
-info = {}
-info['order'] = []
+info = {};
+info['order'] = [];
+var orderPlaced = false;
+var delivery = false;
+var orderId = "";
+var orderChecker;
 
-//busy meter stuff
+function checkOut() {
+	var modal = $('#orderModal')
+		var name = modal.find('#nameinput').val();
+		var delivery = modal.find('#deliverySwitch').is(":checked");
+		var room = parseInt(modal.find('#roomNumber').val());
+		var comment = modal.find( '#comment' ).val();
 
+		var Order = Parse.Object.extend('Order');
+		var Transaction = Parse.Object.extend('Transaction');
+		order = new Order()
+		order.set('name', name); //user's entered name
+		order.set('roomNumber', room);
+		order.set('delivery', delivery);
+		order.set( 'comment', comment );
+		order.save({
+			success:function(){
+			    orderId = order.id;
+				for (var l = 0; l < info['order'].length; l++) {
+				    var transaction = new Transaction();
+					transaction.save({
+						item: { __type: "Pointer", className: "Item", objectId: info['order'][l].item},
+						order: order,
+						quantity: info['order'][l].qty,
+						options: info['order'][l].options,
+						status: 0
+					    },{
+						success: function(){
+						    //console.log( "Saved! - " + transaction );
+						},
+						error: function(mystery, error){
+							console.log("something went terribly wrong!")
+							console.log(mystery)
+							console.log(error)
+						}
+					    });
+				}
+
+				info['order'] = [];
+				orderPlaced = true;
+				$('number').text(info['order'].length);
+				document.getElementById( "queueButton" ).style.color = "#ff4444";
+				orderChecker = setInterval( "checkYourOrder()", 10000 );
+
+			},
+			error: function(mystery, error){
+				console.log("could not create order!")
+				console.log(mystery);
+				console.log(error);
+			}
+		})
+		modal.foundation('reveal', 'close');
+		return false;
+}
 
 function updateQueueModal() {
 	var modal = $('#queueModal')
 		var Transaction = Parse.Object.extend('Transaction');
 		var query = new Parse.Query(Transaction);
-		query.lessThan("status",2);
+		query.lessThan("status",3);
 		query.include("item");
 		query.include("order");
+		query.ascending("createdAt");
 		query.find({
 			success: function(results){
 				modal.find('.row').empty()
@@ -22,17 +78,19 @@ function updateQueueModal() {
 					// console.log(results[i].attributes)
 					// console.log(results[i].attributes.item.attributes)
 					// console.log(results[i].attributes.order.attributes)
-					string += '<div class="small-4 columns"><p>Orderer:&nbsp;'+results[i].attributes.order.attributes.name+'</p></div>'
-					string += '<div class="small-4 columns"><p>Item:&nbsp;'+results[i].attributes.item.attributes.name+'</p></div>'
-					string += '<div class="small-4 columns">'
+					string += '<div class="large-4 medium-6 small-12 columns"><p>Orderer:&nbsp;<strong>'+results[i].attributes.order.attributes.name+'</strong></p></div>'
+					string += '<div class="large-4 medium-6 small-12 columns"><p>Item:&nbsp;<strong>'+results[i].attributes.item.attributes.name+'</strong></p></div>'
+					string += '<div class="large-4 medium-12 small-12 columns">'
 					if (results[i].attributes.status == 0) {
-						string += '<div class="alert-box secondary">We haven\'t started making it yet</div></div>'
+						string += '<div class="alert-box secondary">We haven\'t started making it yet</div></div> <hr/>'
 					}
-					else {
-						string += '<div class="alert-box">We\'re making this item right now!</div></div>' 
+					else if (results[i].attributes.status == 1) {
+						string += '<div class="alert-box">We\'re making this item right now!</div></div> <hr/>' 
+					}
+					else if (results[i].attributes.status == 2) {
+						string += '<div class="alert-box success">Ready for delivery/pickup!</div></div> <hr/>'
 					}
 				};
-				console.log(string);
 				modal.find('.row').append(string);
 			},
 			error: function(mystery, error){
@@ -83,15 +141,54 @@ function setClientBusyMeter() {
     });
 }
 
+function checkYourOrder()
+{
+    var Transaction = Parse.Object.extend( "Transaction" );
+    var query = new Parse.Query( Transaction );
+    var Order = Parse.Object.extend( "Order" );
+    var order = new Order();
+    order.id = orderId;
+    query.equalTo( "order", order );
+    query.lessThan( "status", 2 );
+    query.find(
+    {
+	success: function( results )
+	{
+	    if( results.length < 1 )
+	    {
+		if( !delivery )
+		{
+		    $( "#readyModal" ).foundation( "reveal", "open" );
+		    $( "#sounds" ).html( "<audio src='img/Ship_Bell-Mike_Koenig-1911209136.wav' autoplay></audio>" );
+		}
+		clearInterval( orderChecker );
+		orderPlaced = false;
+		delivery = false;
+		document.getElementById( "queueButton" ).style.color = "#ffffff";
+	    }
+	},
+	error: function( error )
+	{
+	    console.log( error );
+	}
+    });
+}
+
 
 $( function() {
 
-	$('[data-reveal-id="orderModal"]').click(function(){
+	$('[data-reveal-id="orderModal"]').click( function(){
+		$('#orderList').html( "" );
+		var total = 0;
+		var num = 0;
 		for (var k = 0; k < info['order'].length; k++) {
-			info['order'][k]
-			$('tbody#orderList').append("<tr><td></td><td></td><td></td></tr>")
-		};
-	});
+		    item = info['order'][k];
+		    $('#orderList').append("<tr><td>" + item.name + "</td><td>" + item.qty + "</td><td>$" + (item.price * item.qty).toFixed(2) + "</td></tr>");
+		    total += item.price * item.qty;
+		    num += item.qty;
+		}
+		$('#orderList').append( "<tr><th>Total:</th><th>" + num + "</th><th>$" + total.toFixed(2) + "</th>" );
+	    });
 
 	var Item = Parse.Object.extend("Item");
 	var query = new Parse.Query(Item);
@@ -132,6 +229,12 @@ $( function() {
 				isotope.append(string);
 				modals.append(modal);
 				placeOrder(i);
+				// $('form').each(function(index){
+				// 	$( this ).on('submit', function(e){
+				// 		e.preventDefault();
+				// 		return false;
+				// 	});
+				// });
 			}
 			$(document).foundation();
 		},
@@ -163,91 +266,26 @@ $( function() {
 	}
 
 	$('#queueButton').click(function(){
-<<<<<<< Updated upstream
 		updateQueueModal();
 		// modal.empty()
 		// modal.append
-=======
-		var modal = $('#queueModal')
-		var Transaction = Parse.Object.extend('Transaction');
-		var query = new Parse.Query(Transaction);
-		query.greaterThan("status",0);
-		query.find({
-			success: function(){
-				
-			},
-			error: function(mystery, error){
-
-			}
-		})
-		modal.empty()
-		modal.append
->>>>>>> Stashed changes
 	});
-
-
-
-	// init Isotope
-	// var $container = $('.isotope').isotope({
-	// 	itemSelector: '.element-item',
-	// 	layoutMode: 'fitRows',
-	// 	getSortData: {
-	// 		name: '.name',
-	// 		symbol: '.symbol',
-	// 		number: '.number parseInt',
-	// 		category: '[data-category]',
-	// 		weight: function( itemElem ) {
-	// 		var weight = $( itemElem ).find('.weight').text();
-	// 		return parseFloat( weight.replace( /[\(\)]/g, '') );
-	// 		}
-	// 	}
-	// 	});
-
-	// // filter functions
-	// var filterFns = {
-	// 	// show if number is greater than 50
-	// 	numberGreaterThan50: function() {
-	// 	var number = $(this).find('.number').text();
-	// 	return parseInt( number, 10 ) > 50;
-	// 	},
-	// 	// show if name ends with -ium
-	// 	ium: function() {
-	// 	var name = $(this).find('.name').text();
-	// 	return name.match( /ium$/ );
-	// 	}
-	// };
-
-	// // bind filter button click
-	// $('#filters').on( 'click', 'button', function() {
-	// 	var filterValue = $( this ).attr('data-filter');
-	// 	// use filterFn if matches value
-	// 	filterValue = filterFns[ filterValue ] || filterValue;
-	// 	$container.isotope({ filter: filterValue });
-	// 	});
-
-	// // bind sort button click
-	// $('#sorts').on( 'click', 'button', function() {
-	// 	var sortByValue = $(this).attr('data-sort-by');
-	// 	$container.isotope({ sortBy: sortByValue });
-	// 	});
-  
-	// // change is-checked class on buttons
-	// $('.button-group').each( function( i, buttonGroup ) {
-	// 	var $buttonGroup = $( buttonGroup );
-	// 	$buttonGroup.on( 'click', 'button', function() {
-	// 		$buttonGroup.find('.is-checked').removeClass('is-checked');
-	// 		$( this ).addClass('is-checked');
-	// 		});
-	// 	});
 
 	setClientBusyMeter();
 	setInterval( "setClientBusyMeter()", 10000 );
 	setInterval( "updateQueueModal()", 10000 );
 
+<<<<<<< HEAD
+	// $('#checkout').click(function(){
+	$('form').each(function(index){
+		$(this).on('submit', function(e){
+			e.preventDefault();
+			return false;
+=======
 	$('#checkout').click(function(){
 		var modal = $('#orderModal')
 		var name = modal.find('#nameinput').val();
-		var delivery = modal.find('#deliveryInput').is(":checked");
+	        delivery = modal.find('#deliverySwitch').is(":checked");
 		var room = parseInt(modal.find('#roomNumber').val());
 		var comment = modal.find( '#comment' ).val();
 
@@ -260,33 +298,60 @@ $( function() {
 		order.set( 'comment', comment );
 		order.save({
 			success:function(){
-				var transaction = new Transaction();
+			    orderId = order.id;
 				for (var l = 0; l < info['order'].length; l++) {
+				    var transaction = new Transaction();
 					transaction.save({
 						item: { __type: "Pointer", className: "Item", objectId: info['order'][l].item},
 						order: order,
 						quantity: info['order'][l].qty,
 						options: info['order'][l].options,
 						status: 0
-					},{
+					    },{
 						success: function(){
-						    //console.log("order placed!")
+						    //console.log( "Saved! - " + transaction );
 						},
 						error: function(mystery, error){
 							console.log("something went terribly wrong!")
 							console.log(mystery)
 							console.log(error)
 						}
-					})
-				};
+					    });
+				}
+
+				info['order'] = [];
+				orderPlaced = true;
+				$('number').text(info['order'].length);
+				document.getElementById( "queueButton" ).style.color = "#ff4444";
+				orderChecker = setInterval( "checkYourOrder()", 10000 );
+
 			},
 			error: function(mystery, error){
 				console.log("could not create order!")
 				console.log(mystery);
 				console.log(error);
 			}
+>>>>>>> a985b5aa2daf5da33e225c8d27a2b6f19d370567
 		})
-		modal.foundation('reveal', 'close');
 	});
+
+	$('#checkout').click(function(){
+		Foundation.libs.abide.validate($('#orderModal form').find('input'),{type:''});
+		checkOut();
+	});
+	// $('#orderModal form').submit(function(event){
+	// 	event.preventDefault();
+	// 	return false;
+	// })
+
+	// $('#orderModal form').on('valid.fndtn.abide', function(){
+	// 	checkOut();
+	// 	// Foundation.libs.abide.validate($('#orderModal form').find('input'),{type:''});
+	// 	// if(info['order'].length == 0) {
+	// 	// 	modal.foundation('reveal', 'close');
+	// 	// 	return false;
+	// 	// }
+		
+	// });
 
 });
