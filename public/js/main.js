@@ -1,10 +1,11 @@
 Parse.initialize("CxmEYHd1nKiLXtz9B2IUYjDzrjiu8FA8BGrOzscX", "UqKme9pXBvdcG0YRM7JJU1PY7cm52Qkb2nmfAdkp");
 
 
-info = {}
-info['order'] = []
-
-//busy meter stuff
+info = {};
+info['order'] = [];
+var orderPlaced = false;
+var orderId = "";
+var orderChecker;
 
 
 function updateQueueModal() {
@@ -50,7 +51,7 @@ function setClientBusyMeter() {
     var numOpenTransactions = 0;
     var Transaction = Parse.Object.extend( "Transaction" );
     var query = new Parse.Query( Transaction );
-    query.lessThan( "status", 3 );
+    query.lessThan( "status", 2 );
     query.find(
     {
 	success: function( results ){
@@ -81,6 +82,34 @@ function setClientBusyMeter() {
 
 	},
 	error: function( error ){
+	    console.log( error );
+	}
+    });
+}
+
+function checkYourOrder()
+{
+    var Transaction = Parse.Object.extend( "Transaction" );
+    var query = new Parse.Query( Transaction );
+    var Order = Parse.Object.extend( "Order" );
+    var order = new Order();
+    order.id = orderId;
+    query.equalTo( "order", order );
+    query.lessThan( "status", 2 );
+    query.find(
+    {
+	success: function( results )
+	{
+	    if( results.length < 1 )
+	    {
+		console.log( "Your order is ready!" );
+		clearInterval( orderChecker );
+		orderPlaced = false;
+		document.getElementById( "queueButton" ).style.color = "#ffffff";
+	    }
+	},
+	error: function( error )
+	{
 	    console.log( error );
 	}
     });
@@ -233,7 +262,7 @@ $( function() {
 	$('#checkout').click(function(){
 		var modal = $('#orderModal')
 		var name = modal.find('#nameinput').val();
-		var delivery = modal.find('#deliveryInput').is(":checked");
+		var delivery = modal.find('#deliverySwitch').is(":checked");
 		var room = parseInt(modal.find('#roomNumber').val());
 		var comment = modal.find( '#comment' ).val();
 
@@ -246,25 +275,33 @@ $( function() {
 		order.set( 'comment', comment );
 		order.save({
 			success:function(){
-				var transaction = new Transaction();
+			    orderId = order.id;
 				for (var l = 0; l < info['order'].length; l++) {
+				    var transaction = new Transaction();
 					transaction.save({
 						item: { __type: "Pointer", className: "Item", objectId: info['order'][l].item},
 						order: order,
 						quantity: info['order'][l].qty,
 						options: info['order'][l].options,
 						status: 0
-					},{
+					    },{
 						success: function(){
-						    //console.log("order placed!")
+						    //console.log( "Saved! - " + transaction );
 						},
 						error: function(mystery, error){
 							console.log("something went terribly wrong!")
 							console.log(mystery)
 							console.log(error)
 						}
-					})
-				};
+					    });
+				}
+
+				info['order'] = [];
+				orderPlaced = true;
+				$('number').text(info['order'].length);
+				document.getElementById( "queueButton" ).style.color = "#ff4444";
+				orderChecker = setInterval( "checkYourOrder()", 10000 );
+
 			},
 			error: function(mystery, error){
 				console.log("could not create order!")

@@ -75,6 +75,11 @@ function checkOrders( playAlert ) {
 		string += "</td><td>" + object.item.attributes.name;
 		string += "</td><td>" + object.quantity;
 		string += "</td><td>";
+		if( object.order.attributes.delivery )
+		{
+		    string += "Delivery: Rm. ";
+		    string += object.order.attributes.roomNumber + "<br/>";
+		}
 		for( var key in object.options )
 		{
 		    if( object.options[key] )
@@ -83,11 +88,6 @@ function checkOrders( playAlert ) {
 		    }
 		}
 		string += "</td><td>";
-		if( object.order.attributes.delivery )
-		{
-		    string += "Delivery: Rm. ";
-		    string += object.order.attributes.roomNumber + "<br/><br/>";
-		}
 		if( object.order.attributes.comment )
 		{
 		    string += object.order.attributes.comment;
@@ -106,7 +106,7 @@ function checkOrders( playAlert ) {
 		}
 		else if( object.status > 2 )
 		{
-		    string += "success disabled' style='color:#000000;'>Done</a></td></tr>";
+		    string += "success disabled' style='background-color:#999999; color:#000000;'>Done</a></td></tr>";
 		}
 		else
 		{
