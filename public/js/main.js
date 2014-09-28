@@ -4,6 +4,7 @@ Parse.initialize("CxmEYHd1nKiLXtz9B2IUYjDzrjiu8FA8BGrOzscX", "UqKme9pXBvdcG0YRM7
 info = {};
 info['order'] = [];
 var orderPlaced = false;
+var delivery = false;
 var orderId = "";
 var orderChecker;
 
@@ -102,10 +103,14 @@ function checkYourOrder()
 	{
 	    if( results.length < 1 )
 	    {
-		$( "#readyModal" ).foundation( "reveal", "open" );
-		$( "#sounds" ).html( "<audio src='img/Ship_Bell-Mike_Koenig-1911209136.wav' autoplay></audio>" );
+		if( !delivery )
+		{
+		    $( "#readyModal" ).foundation( "reveal", "open" );
+		    $( "#sounds" ).html( "<audio src='img/Ship_Bell-Mike_Koenig-1911209136.wav' autoplay></audio>" );
+		}
 		clearInterval( orderChecker );
 		orderPlaced = false;
+		delivery = false;
 		document.getElementById( "queueButton" ).style.color = "#ffffff";
 	    }
 	},
@@ -269,7 +274,7 @@ $( function() {
 	$('#checkout').click(function(){
 		var modal = $('#orderModal')
 		var name = modal.find('#nameinput').val();
-		var delivery = modal.find('#deliverySwitch').is(":checked");
+	        delivery = modal.find('#deliverySwitch').is(":checked");
 		var room = parseInt(modal.find('#roomNumber').val());
 		var comment = modal.find( '#comment' ).val();
 
