@@ -10,56 +10,56 @@ var orderChecker;
 
 function checkOut() {
 	var modal = $('#orderModal')
-		var name = modal.find('#nameinput').val();
-		var delivery = modal.find('#deliverySwitch').is(":checked");
-		var room = parseInt(modal.find('#roomNumber').val());
-		var comment = modal.find( '#comment' ).val();
+	var name = modal.find('#nameinput').val();
+	var delivery = modal.find('#deliverySwitch').is(":checked");
+	var room = parseInt(modal.find('#roomNumber').val());
+	var comment = modal.find( '#comment' ).val();
 
-		var Order = Parse.Object.extend('Order');
-		var Transaction = Parse.Object.extend('Transaction');
-		order = new Order()
-		order.set('name', name); //user's entered name
-		order.set('roomNumber', room);
-		order.set('delivery', delivery);
-		order.set( 'comment', comment );
-		order.save({
-			success:function(){
-			    orderId = order.id;
-				for (var l = 0; l < info['order'].length; l++) {
-				    var transaction = new Transaction();
-					transaction.save({
-						item: { __type: "Pointer", className: "Item", objectId: info['order'][l].item},
-						order: order,
-						quantity: info['order'][l].qty,
-						options: info['order'][l].options,
-						status: 0
-					    },{
-						success: function(){
-						    //console.log( "Saved! - " + transaction );
-						},
-						error: function(mystery, error){
-							console.log("something went terribly wrong!")
-							console.log(mystery)
-							console.log(error)
-						}
-					    });
-				}
-
-				info['order'] = [];
-				orderPlaced = true;
-				$('number').text(info['order'].length);
-				document.getElementById( "queueButton" ).style.color = "#ff4444";
-				orderChecker = setInterval( "checkYourOrder()", 10000 );
-
-			},
-			error: function(mystery, error){
-				console.log("could not create order!")
-				console.log(mystery);
-				console.log(error);
+	var Order = Parse.Object.extend('Order');
+	var Transaction = Parse.Object.extend('Transaction');
+	order = new Order()
+	order.set('name', name); //user's entered name
+	order.set('roomNumber', room);
+	order.set('delivery', delivery);
+	order.set( 'comment', comment );
+	order.save({
+		success:function(){
+		    orderId = order.id;
+			for (var l = 0; l < info['order'].length; l++) {
+			    var transaction = new Transaction();
+				transaction.save({
+					item: { __type: "Pointer", className: "Item", objectId: info['order'][l].item},
+					order: order,
+					quantity: info['order'][l].qty,
+					options: info['order'][l].options,
+					status: 0
+				    },{
+					success: function(){
+					    //console.log( "Saved! - " + transaction );
+					},
+					error: function(mystery, error){
+						console.log("something went terribly wrong!")
+						console.log(mystery)
+						console.log(error)
+					}
+				    });
 			}
-		})
-		modal.foundation('reveal', 'close');
-		return false;
+
+			info['order'] = [];
+			orderPlaced = true;
+			$('number').text(info['order'].length);
+			document.getElementById( "queueButton" ).style.color = "#ff4444";
+			orderChecker = setInterval( "checkYourOrder()", 10000 );
+
+		},
+		error: function(mystery, error){
+			console.log("could not create order!")
+			console.log(mystery);
+			console.log(error);
+		}
+	})
+	modal.foundation('reveal', 'close');
+	return false;
 }
 
 function updateQueueModal() {
@@ -283,8 +283,12 @@ $( function() {
 	});
 
 	$('#checkout').click(function(){
-		Foundation.libs.abide.validate($('#orderModal form').find('input'),{type:''});
-		checkOut();
+		$els = $('#orderModal input')
+		if(Foundation.libs.abide.parse_patterns($els)[0] == true) {
+			checkOut();
+		}
+		// console.log(Foundation.libs.abide.validate($('#orderModal form').find('input'),{type:''}));
+		
 	});
 	// $('#orderModal form').submit(function(event){
 	// 	event.preventDefault();
