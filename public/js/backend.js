@@ -71,7 +71,8 @@ function checkOrders( playAlert ) {
 	    {
 		var object = results[i].attributes;
 		var string = "";
-		string += "<tr><td>" + object.order.attributes.name;
+		var done = object.status > 1 ? 'done' : 'notdone';
+		string += "<tr data-category='"+done+"'><td>" + object.order.attributes.name;
 		string += "</td><td>" + object.item.attributes.name;
 		string += "</td><td>" + object.quantity;
 		string += "</td><td>";
