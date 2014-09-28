@@ -103,6 +103,7 @@ function checkYourOrder()
 	    if( results.length < 1 )
 	    {
 		$( "#readyModal" ).foundation( "reveal", "open" );
+		$( "#sounds" ).html( "<audio src='img/Ship_Bell-Mike_Koenig-1911209136.wav' autoplay></audio>" );
 		clearInterval( orderChecker );
 		orderPlaced = false;
 		document.getElementById( "queueButton" ).style.color = "#ffffff";
