@@ -119,12 +119,18 @@ function checkYourOrder()
 
 $( function() {
 
-	$('[data-reveal-id="orderModal"]').click(function(){
+	$('[data-reveal-id="orderModal"]').click( function(){
+		$('#orderList').html( "" );
+		var total = 0;
+		var num = 0;
 		for (var k = 0; k < info['order'].length; k++) {
-			info['order'][k]
-			$('tbody#orderList').append("<tr><td></td><td></td><td></td></tr>")
-		};
-	});
+		    item = info['order'][k];
+		    $('#orderList').append("<tr><td>" + item.name + "</td><td>" + item.qty + "</td><td>$" + item.price * item.qty + "</td></tr>");
+		    total += item.price * item.qty;
+		    num += item.qty;
+		}
+		$('#orderList').append( "<tr><th>Total:</th><td>" + num + "</td><td>$" + total + "</td>" );
+	    });
 
 	var Item = Parse.Object.extend("Item");
 	var query = new Parse.Query(Item);
