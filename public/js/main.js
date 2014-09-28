@@ -7,6 +7,59 @@ var orderPlaced = false;
 var orderId = "";
 var orderChecker;
 
+function checkOut() {
+	var modal = $('#orderModal')
+		var name = modal.find('#nameinput').val();
+		var delivery = modal.find('#deliverySwitch').is(":checked");
+		var room = parseInt(modal.find('#roomNumber').val());
+		var comment = modal.find( '#comment' ).val();
+
+		var Order = Parse.Object.extend('Order');
+		var Transaction = Parse.Object.extend('Transaction');
+		order = new Order()
+		order.set('name', name); //user's entered name
+		order.set('roomNumber', room);
+		order.set('delivery', delivery);
+		order.set( 'comment', comment );
+		order.save({
+			success:function(){
+			    orderId = order.id;
+				for (var l = 0; l < info['order'].length; l++) {
+				    var transaction = new Transaction();
+					transaction.save({
+						item: { __type: "Pointer", className: "Item", objectId: info['order'][l].item},
+						order: order,
+						quantity: info['order'][l].qty,
+						options: info['order'][l].options,
+						status: 0
+					    },{
+						success: function(){
+						    //console.log( "Saved! - " + transaction );
+						},
+						error: function(mystery, error){
+							console.log("something went terribly wrong!")
+							console.log(mystery)
+							console.log(error)
+						}
+					    });
+				}
+
+				info['order'] = [];
+				orderPlaced = true;
+				$('number').text(info['order'].length);
+				document.getElementById( "queueButton" ).style.color = "#ff4444";
+				orderChecker = setInterval( "checkYourOrder()", 10000 );
+
+			},
+			error: function(mystery, error){
+				console.log("could not create order!")
+				console.log(mystery);
+				console.log(error);
+			}
+		})
+		modal.foundation('reveal', 'close');
+		return false;
+}
 
 function updateQueueModal() {
 	var modal = $('#queueModal')
@@ -125,11 +178,11 @@ $( function() {
 		var num = 0;
 		for (var k = 0; k < info['order'].length; k++) {
 		    item = info['order'][k];
-		    $('#orderList').append("<tr><td>" + item.name + "</td><td>" + item.qty + "</td><td>$" + item.price * item.qty + "</td></tr>");
+		    $('#orderList').append("<tr><td>" + item.name + "</td><td>" + item.qty + "</td><td>$" + (item.price * item.qty).toFixed(2) + "</td></tr>");
 		    total += item.price * item.qty;
 		    num += item.qty;
 		}
-		$('#orderList').append( "<tr><th>Total:</th><td>" + num + "</td><td>$" + total + "</td>" );
+		$('#orderList').append( "<tr><th>Total:</th><th>" + num + "</th><th>$" + total.toFixed(2) + "</th>" );
 	    });
 
 	var Item = Parse.Object.extend("Item");
@@ -171,6 +224,12 @@ $( function() {
 				isotope.append(string);
 				modals.append(modal);
 				placeOrder(i);
+				// $('form').each(function(index){
+				// 	$( this ).on('submit', function(e){
+				// 		e.preventDefault();
+				// 		return false;
+				// 	});
+				// });
 			}
 			$(document).foundation();
 		},
@@ -207,116 +266,35 @@ $( function() {
 		// modal.append
 	});
 
-
-
-	// init Isotope
-	// var $container = $('.isotope').isotope({
-	// 	itemSelector: '.element-item',
-	// 	layoutMode: 'fitRows',
-	// 	getSortData: {
-	// 		name: '.name',
-	// 		symbol: '.symbol',
-	// 		number: '.number parseInt',
-	// 		category: '[data-category]',
-	// 		weight: function( itemElem ) {
-	// 		var weight = $( itemElem ).find('.weight').text();
-	// 		return parseFloat( weight.replace( /[\(\)]/g, '') );
-	// 		}
-	// 	}
-	// 	});
-
-	// // filter functions
-	// var filterFns = {
-	// 	// show if number is greater than 50
-	// 	numberGreaterThan50: function() {
-	// 	var number = $(this).find('.number').text();
-	// 	return parseInt( number, 10 ) > 50;
-	// 	},
-	// 	// show if name ends with -ium
-	// 	ium: function() {
-	// 	var name = $(this).find('.name').text();
-	// 	return name.match( /ium$/ );
-	// 	}
-	// };
-
-	// // bind filter button click
-	// $('#filters').on( 'click', 'button', function() {
-	// 	var filterValue = $( this ).attr('data-filter');
-	// 	// use filterFn if matches value
-	// 	filterValue = filterFns[ filterValue ] || filterValue;
-	// 	$container.isotope({ filter: filterValue });
-	// 	});
-
-	// // bind sort button click
-	// $('#sorts').on( 'click', 'button', function() {
-	// 	var sortByValue = $(this).attr('data-sort-by');
-	// 	$container.isotope({ sortBy: sortByValue });
-	// 	});
-  
-	// // change is-checked class on buttons
-	// $('.button-group').each( function( i, buttonGroup ) {
-	// 	var $buttonGroup = $( buttonGroup );
-	// 	$buttonGroup.on( 'click', 'button', function() {
-	// 		$buttonGroup.find('.is-checked').removeClass('is-checked');
-	// 		$( this ).addClass('is-checked');
-	// 		});
-	// 	});
-
 	setClientBusyMeter();
 	setInterval( "setClientBusyMeter()", 10000 );
 	setInterval( "updateQueueModal()", 10000 );
 
-	$('#checkout').click(function(){
-		var modal = $('#orderModal')
-		var name = modal.find('#nameinput').val();
-		var delivery = modal.find('#deliverySwitch').is(":checked");
-		var room = parseInt(modal.find('#roomNumber').val());
-		var comment = modal.find( '#comment' ).val();
-
-		var Order = Parse.Object.extend('Order');
-		var Transaction = Parse.Object.extend('Transaction');
-		order = new Order()
-		order.set('name', name); //user's entered name
-		order.set('roomNumber', room);
-		order.set('delivery', delivery);
-		order.set( 'comment', comment );
-		order.save({
-			success:function(){
-			    orderId = order.id;
-				for (var l = 0; l < info['order'].length; l++) {
-				    var transaction = new Transaction();
-					transaction.save({
-						item: { __type: "Pointer", className: "Item", objectId: info['order'][l].item},
-						order: order,
-						quantity: info['order'][l].qty,
-						options: info['order'][l].options,
-						status: 0
-					    },{
-						success: function(){
-						    //console.log( "Saved! - " + transaction );
-						},
-						error: function(mystery, error){
-							console.log("something went terribly wrong!")
-							console.log(mystery)
-							console.log(error)
-						}
-					    });
-				}
-
-				info['order'] = [];
-				orderPlaced = true;
-				$('number').text(info['order'].length);
-				document.getElementById( "queueButton" ).style.color = "#ff4444";
-				orderChecker = setInterval( "checkYourOrder()", 10000 );
-
-			},
-			error: function(mystery, error){
-				console.log("could not create order!")
-				console.log(mystery);
-				console.log(error);
-			}
+	// $('#checkout').click(function(){
+	$('form').each(function(index){
+		$(this).on('submit', function(e){
+			e.preventDefault();
+			return false;
 		})
-		modal.foundation('reveal', 'close');
 	});
+
+	$('#checkout').click(function(){
+		Foundation.libs.abide.validate($('#orderModal form').find('input'),{type:''});
+		checkOut();
+	});
+	// $('#orderModal form').submit(function(event){
+	// 	event.preventDefault();
+	// 	return false;
+	// })
+
+	// $('#orderModal form').on('valid.fndtn.abide', function(){
+	// 	checkOut();
+	// 	// Foundation.libs.abide.validate($('#orderModal form').find('input'),{type:''});
+	// 	// if(info['order'].length == 0) {
+	// 	// 	modal.foundation('reveal', 'close');
+	// 	// 	return false;
+	// 	// }
+		
+	// });
 
 });
