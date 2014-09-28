@@ -102,7 +102,7 @@ function checkYourOrder()
 	{
 	    if( results.length < 1 )
 	    {
-		console.log( "Your order is ready!" );
+		$( "#readyModal" ).foundation( "reveal", "open" );
 		clearInterval( orderChecker );
 		orderPlaced = false;
 		document.getElementById( "queueButton" ).style.color = "#ffffff";
